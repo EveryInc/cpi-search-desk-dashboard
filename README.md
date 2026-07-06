@@ -1,10 +1,16 @@
-# CPI — Build Your Search Desk Dashboard
+# CPI — Build a Custom Dashboard Skill
 
-**Workshop exercise · Level 3, Hour 1 (Intro to Cowork) · ~20 min build**
+**Workshop exercise · Level 3, Hour 1 (Intro to Cowork) · ~20 min**
 
-A hands-on Claude Code exercise for CPI search consultants. Participants paste one prompt and Claude Code reads four scattered files — call notes, a mandate list, a candidate tracker, and client feedback — and builds a single interactive "search desk" dashboard that surfaces what's about to cost them a fee today.
+A hands-on Claude Code exercise for CPI search consultants. Participants get a folder
+containing four scattered data files — call notes, a mandate list, a candidate tracker, and
+client feedback — plus a pre-built interactive "search desk" dashboard that joins them.
+Their job: ask Claude to change the dashboard so it's designed the way *they* like it, then
+save that as a skill they can reuse on fresh data later.
 
-This is the recruiting-tailored version of Every's "Build a Custom Dashboard" exercise. The point isn't the dashboard — it's the muscle: **point Claude at your real chaos and let it synthesize.**
+This is the recruiting-tailored version of Every's "Build a Custom Dashboard Skill"
+exercise. The point isn't the dashboard — it's the muscle: **iterate on a real artifact with
+Claude, then lock your taste into a skill so it's repeatable.**
 
 ---
 
@@ -12,17 +18,29 @@ This is the recruiting-tailored version of Every's "Build a Custom Dashboard" ex
 
 **Folder:** [`00-search-desk-dashboard/`](00-search-desk-dashboard/)
 
-Paste [`prompt.md`](00-search-desk-dashboard/prompt.md) into Claude Code with the four data files in the folder. First useful output in well under 12 minutes.
+Open [`search-desk-dashboard.html`](00-search-desk-dashboard/search-desk-dashboard.html) in a
+browser, then follow the step-by-step prompts in
+[`prompt.md`](00-search-desk-dashboard/prompt.md): ask Claude to make a change to the
+dashboard in the folder, and save that as a skill to reuse for later.
 
-**Data files (all synthetic, no real PII):**
+**A few things participants might change:**
+
+- **Design/Brand** — colors, typography, dark mode, "make it look like ours"
+- **Sections/Structure** — reorder panels, collapse metrics, add a new view
+- **Writing Style** — labels and action items in their own voice
+
+**What's in the folder:**
 | File | What it is |
 |---|---|
+| `search-desk-dashboard.html` | The pre-built dashboard — the artifact they'll customize |
 | `active-searches.csv` | 8 live mandates — client, role, strategy, stage, fee, target close, status |
 | `candidates.csv` | 13 candidates in play, mapped to searches, with stage + last-contact + interest |
 | `candidate-call-notes.md` | Messy first-person screening notes, one per candidate |
 | `client-feedback.json` | Client interview feedback and ratings on submitted candidates |
 
-The files **cross-reference each other** — a call note flags a candidate that the tracker says is stale, that the client feedback says is a "Strong Yes." The whole exercise is Claude connecting those dots.
+All data is synthetic — no real PII. The files **cross-reference each other** — a call note
+flags a candidate that the tracker says is stale, that the client feedback says is a "Strong
+Yes" — and the dashboard is what those joins look like when they're pulled together.
 
 ---
 
@@ -44,12 +62,12 @@ Two synthetic resumes (Priya Nadkarni, Owen Brackett — the same candidates tha
 
 ## Facilitator Notes
 
-- **Complexity:** Easy-Medium. The wow is fast; refinement fills the hour.
-- **Support level:** Self-directed. This cohort is AI-forward and will move quickly. Your job is to push them past the first output into iteration.
-- **The mindset shift to name out loud:** In their GPTs, they paste text *in* and get text *out*. Here, Claude reaches into *multiple files at once* and produces a *working tool*. That's cowork. Say it explicitly.
-- **The wow moment:** the "Needs Me Today" panel correctly flags Priya Nadkarni (client "Strong Yes" + a competing offer ticking in the call notes) and the Halyard offer about to stall — insights that only exist when you join all four files. If someone's dashboard surfaces those, have them show the room.
-- **Where they'll get stuck:** a few will ask for the "right" dashboard. There isn't one — the prompt lists ideas, their judgment fills the rest. That ambiguity *is* the lesson.
-- **If they finish early:** point them at the stretch goals in the prompt — especially drafting the client-nudge emails and "rebuild this every Monday." The automation ask is the bridge to the rest of Level 3.
+- **Complexity:** Easy. The dashboard already exists, so nobody stalls at a blank page — the whole 20 minutes goes to iteration and the skill save.
+- **Support level:** Self-directed. This cohort is AI-forward and will move quickly. Your job is to push them past the first tweak into changes that reflect *their* taste.
+- **The mindset shift to name out loud:** In their GPTs, they paste text *in* and get text *out*. Here, Claude edits a *working tool* that lives in their files — and a skill makes that edit repeatable on next week's data. That's cowork. Say it explicitly.
+- **The wow moment:** rerunning the `search-desk-dashboard` skill in a fresh chat and watching their design come back untouched — same brand, same sections, same voice. If someone's version looks genuinely theirs, have them show the room.
+- **Where they'll get stuck:** a few will ask what the "right" change is. There isn't one — Design/Brand, Sections/Structure, and Writing Style are starting points, their judgment fills the rest. That ambiguity *is* the lesson.
+- **If they finish early:** have them edit a row in `active-searches.csv` and rerun the skill to see the dashboard update; stack a second and third change into the skill; or ask Claude to rebuild it automatically every Monday. The automation ask is the bridge to the rest of Level 3.
 - **Data confidence:** persona and all data are invented/representative, calibrated to CPI's public business profile (investment-professional search for PE/hedge/credit/RE/VC/family office) and a call-note-heavy workflow. No real candidates, clients, or comp.
 
 ---

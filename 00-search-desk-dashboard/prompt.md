@@ -1,32 +1,49 @@
-I'm a search consultant at CPI. I run a desk of active mandates placing investment professionals — PE, credit, real estate, hedge fund, VC, family office — and on any given day I'm juggling eight or nine live searches, dozens of candidates at different stages, and a stream of client feedback that lands over email and phone. My real problem isn't finding candidates. It's that everything I know is scattered: my raw call notes live in one place, my candidate tracker in another, the mandate list in a spreadsheet, and client feedback buried in my inbox. Every morning I rebuild the picture in my head of "what actually needs me today," and I lose the thread on searches that are quietly going sideways.
+# Build a Custom Dashboard Skill — Demo Prompts
 
-I've attached four files that represent my desk:
-- `active-searches.csv` — my live mandates (client, role, strategy, stage, fee, target close date, status)
-- `candidates.csv` — every candidate in play, which search they're on, their stage, last contact date, and interest level
-- `candidate-call-notes.md` — my messy raw notes from screening calls, one per candidate
+This folder is a search consultant's desk: four data files plus a pre-built "search desk"
+dashboard (`search-desk-dashboard.html` — open it in a browser before you do anything else).
+
+- `active-searches.csv` — live mandates (client, role, strategy, stage, fee, target close date, status)
+- `candidates.csv` — every candidate in play, which search they're on, stage, last contact, interest level
+- `candidate-call-notes.md` — messy raw screening notes, one per candidate
 - `client-feedback.json` — what clients said about candidates they've interviewed
 
-Using all four files, build me a single interactive HTML dashboard — my "search desk" — that I can open in a browser. It should include:
+The dashboard works. It's just not *yours* yet. The exercise: ask Claude to change it the way
+you like it, then save that as a skill so every future rebuild comes out your way.
+**You have 20 minutes.**
 
-1. **A search pipeline board** — one card per active mandate, grouped or colored by status (On Track / At Risk / Overdue). Each card shows the client, role, strategy, stage, fee estimate, days until target close, and how many candidates are in that pipeline.
+**Step 1 — see what you're working with (paste into Claude):**
 
-2. **A "Needs Me Today" action queue** — the single most important panel. Pull together, ranked by urgency: candidates with a client "Strong Yes" waiting on my next move, offer-stage candidates at risk of stalling, searches that are Overdue or At Risk with a thin pipeline, and any candidate I haven't contacted in 14+ days. For each item, say what the action is and why it's urgent — cross-referencing the call notes and client feedback, not just the tracker.
+> Read the four data files and search-desk-dashboard.html in this folder. Tell me how the
+> dashboard is put together — what sections it has and which file each number comes from.
 
-3. **A candidate table per search** — expandable, showing name, current firm/title, stage, interest level, whether they've been submitted to the client, and the latest client feedback rating if there is one.
+**Step 2 — make it yours (pick one or more, edit to taste — this is the point):**
 
-4. **A few desk metrics up top** — total open searches, total fee value in play, count of candidates by stage, and number of searches at risk.
+*Design/Brand:*
 
-Use CPI-appropriate language (mandates, searches, candidates, submissions, placements) and make it clean and professional — this is a tool I'd actually keep open all day. Color-code status consistently so I can scan it in five seconds.
+> Restyle the dashboard: dark theme, CPI blue as the accent color, serif headers, tighter
+> cards. It should look like ours, not like a template.
 
-This isn't a summary — I need you to connect my call notes to the tracker to the client feedback and tell me where a placement is about to slip. Surface the two or three things that will cost me a fee if I miss them today.
+*Sections/Structure:*
 
-After I see the first version, I'll want to refine it:
-- Re-rank the action queue by fee value at risk instead of just urgency
-- Add a "re-route" flag for candidates who are wrong for their current search but right for another one
-- Filter the whole dashboard to just one strategy (e.g. only PE Buyout)
+> Move "Needs Me Today" to the very top and collapse the desk metrics into a single row.
+> Add a "going stale" panel for candidates with no contact in 14+ days.
 
-If I finish early, I want to try:
-- Have you draft the client-nudge emails for every "Strong Yes waiting on me" item, in my voice
-- Add a simple "days in stage" aging indicator so I can see which candidates are going stale
-- Generate a one-paragraph Monday-morning status update I could send my team lead, straight off the dashboard data
-- Ask you to rebuild this dashboard automatically every Monday from an updated set of these files
+*Writing Style:*
+
+> Rewrite every label and action item the way I'd actually say it — short, direct, no
+> corporate speak. "Call Priya today — competing offer in play," not "Follow-up recommended."
+
+**Step 3 — lock it in:**
+
+> Save this as a skill called search-desk-dashboard: given these four files (or updated
+> versions of them), rebuild the dashboard exactly this way — same design, same sections,
+> same voice.
+
+**Step 4 — prove it (new chat):**
+
+> Use the search-desk-dashboard skill to rebuild my dashboard from the files in this folder.
+
+Same dashboard, your way, on demand. That's the whole lesson: the first build is a
+conversation, the skill makes it repeatable — point it at next Monday's files and your
+dashboard comes back designed the way you like it.
