@@ -1,0 +1,70 @@
+{
+  "feedback": [
+    {
+      "search_id": "S-101",
+      "client_firm": "Meridian Capital Partners",
+      "candidate_id": "C-201",
+      "candidate": "Priya Nadkarni",
+      "round": "First round deal team",
+      "date": "2026-06-25",
+      "rating": "Strong Yes",
+      "note": "Team loved her. Want a second round scheduled ASAP. Partner is traveling next week — flagged scheduling risk.",
+      "action_required": "Schedule final round; client slow to confirm dates"
+    },
+    {
+      "search_id": "S-101",
+      "client_firm": "Meridian Capital Partners",
+      "candidate_id": "C-202",
+      "candidate": "Marcus Feldman",
+      "round": "First round",
+      "date": "2026-06-13",
+      "rating": "No",
+      "note": "Too junior for VP. Would consider for a more junior seat.",
+      "action_required": "Re-route to S-108"
+    },
+    {
+      "search_id": "S-104",
+      "client_firm": "Anthem Real Estate",
+      "candidate_id": "C-207",
+      "candidate": "Grace Okafor",
+      "round": "First round",
+      "date": "2026-05-19",
+      "rating": "Maybe",
+      "note": "Fine but not excited. Asked us to widen the pool — pipeline feels thin.",
+      "action_required": "Source more candidates; search is overdue"
+    },
+    {
+      "search_id": "S-105",
+      "client_firm": "Halyard Global",
+      "candidate_id": "C-209",
+      "candidate": "Yuki Tanaka",
+      "round": "Final",
+      "date": "2026-06-27",
+      "rating": "Strong Yes",
+      "note": "Ready to extend offer. Waiting on us to confirm comp expectations before drafting.",
+      "action_required": "Confirm comp and push written offer this week"
+    },
+    {
+      "search_id": "S-105",
+      "client_firm": "Halyard Global",
+      "candidate_id": "C-210",
+      "candidate": "Rafael Ortiz",
+      "round": "First round",
+      "date": "2026-06-09",
+      "rating": "Yes",
+      "note": "Strong backup. Happy to hold if primary closes.",
+      "action_required": "Hold as backup"
+    },
+    {
+      "search_id": "S-102",
+      "client_firm": "Blackford Credit",
+      "candidate_id": "C-204",
+      "candidate": "Owen Brackett",
+      "round": "Screening feedback",
+      "date": "2026-06-26",
+      "rating": "Yes",
+      "note": "Profile looks great, want to interview next week.",
+      "action_required": "Schedule first round"
+    }
+  ]
+}

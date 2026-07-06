@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CPI Search Desk — Alex</title>
+<style>
+  :root{
+    --bg:#0f1419; --panel:#171d26; --panel2:#1e2632; --line:#2a3442;
+    --ink:#e8edf3; --muted:#94a3b8; --faint:#64748b;
+    --ontrack:#2dd4a7; --atrisk:#f5a623; --overdue:#ef4757;
+    --accent:#5b9dff; --accent2:#7c6cff;
+    --chip:#232c38;
+    --strongyes:#2dd4a7; --yes:#7ec8a0; --maybe:#f5a623; --no:#ef4757;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  header.top{padding:20px 28px 14px;border-bottom:1px solid var(--line);
+    display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:12px}
+  .brand{display:flex;flex-direction:column;gap:2px}
+  .brand h1{margin:0;font-size:20px;letter-spacing:.3px}
+  .brand .sub{color:var(--muted);font-size:12.5px}
+  .brand .cpi{color:var(--accent);font-weight:700;letter-spacing:1.5px;font-size:11px;text-transform:uppercase}
+  .asof{color:var(--faint);font-size:12px;text-align:right}
+  main{padding:20px 28px 60px;max-width:1400px;margin:0 auto}
+
+  /* metrics */
+  .metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:22px}
+  .metric{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .metric .n{font-size:26px;font-weight:700;letter-spacing:.5px}
+  .metric .l{color:var(--muted);font-size:11.5px;text-transform:uppercase;letter-spacing:.6px;margin-top:2px}
+  .metric .sublabel{color:var(--faint);font-size:11px;margin-top:5px}
+  .metric.risk .n{color:var(--atrisk)}
+  .stagebars{display:flex;gap:3px;margin-top:8px;height:6px}
+  .stagebars span{border-radius:3px}
+
+  /* controls */
+  .controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:18px;
+    background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 14px}
+  .controls .grp{display:flex;align-items:center;gap:7px}
+  .controls label{color:var(--muted);font-size:12px;letter-spacing:.3px}
+  select,button{font-family:inherit;font-size:13px;color:var(--ink);background:var(--panel2);
+    border:1px solid var(--line);border-radius:8px;padding:7px 11px;cursor:pointer}
+  button.toggle.active{background:var(--accent);border-color:var(--accent);color:#0b1220;font-weight:600}
+  .spacer{flex:1}
+
+  section h2{font-size:13px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);
+    margin:26px 0 12px;display:flex;align-items:center;gap:9px}
+  section h2 .count{background:var(--chip);color:var(--muted);border-radius:20px;padding:1px 9px;font-size:11px;letter-spacing:.5px}
+
+  /* Needs Me Today */
+  .queue{display:flex;flex-direction:column;gap:10px}
+  .qitem{background:var(--panel);border:1px solid var(--line);border-left-width:4px;border-radius:10px;
+    padding:13px 16px;display:grid;grid-template-columns:34px 1fr auto;gap:14px;align-items:start}
+  .qitem.p1{border-left-color:var(--overdue)}
+  .qitem.p2{border-left-color:var(--atrisk)}
+  .qitem.p3{border-left-color:var(--accent)}
+  .qrank{width:34px;height:34px;border-radius:8px;background:var(--panel2);display:flex;
+    align-items:center;justify-content:center;font-weight:700;font-size:15px;color:var(--muted)}
+  .qitem.p1 .qrank{color:var(--overdue)}
+  .qitem.p2 .qrank{color:var(--atrisk)}
+  .qbody .qtitle{font-weight:600;font-size:14.5px}
+  .qbody .qtitle .who{color:var(--accent)}
+  .qbody .qmeta{color:var(--faint);font-size:12px;margin:2px 0 6px}
+  .qbody .qaction{font-size:13px}
+  .qbody .qaction b{color:var(--ink)}
+  .qbody .qwhy{color:var(--muted);font-size:12.5px;margin-top:3px}
+  .qright{text-align:right;white-space:nowrap}
+  .qfee{font-weight:700;font-size:15px}
+  .qfee .cap{display:block;color:var(--faint);font-size:10px;text-transform:uppercase;letter-spacing:.6px;font-weight:500}
+  .tag{display:inline-block;font-size:10.5px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;
+    padding:2px 8px;border-radius:20px;margin-top:6px}
+  .tag.sy{background:rgba(45,212,167,.16);color:var(--strongyes)}
+  .tag.offer{background:rgba(124,108,255,.18);color:#b3a7ff}
+  .tag.cold{background:rgba(148,163,184,.16);color:var(--muted)}
+  .tag.thin{background:rgba(245,166,35,.16);color:var(--atrisk)}
+  .tag.reroute{background:rgba(91,157,255,.16);color:var(--accent)}
+
+  /* pipeline board */
+  .board{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:13px}
+  .card{background:var(--panel);border:1px solid var(--line);border-top-width:3px;border-radius:12px;padding:14px 16px}
+  .card.ontrack{border-top-color:var(--ontrack)}
+  .card.atrisk{border-top-color:var(--atrisk)}
+  .card.overdue{border-top-color:var(--overdue)}
+  .card .chead{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+  .card .client{font-weight:700;font-size:15px}
+  .card .role{color:var(--muted);font-size:12.5px}
+  .statuspill{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;
+    padding:3px 9px;border-radius:20px;white-space:nowrap}
+  .statuspill.ontrack{background:rgba(45,212,167,.16);color:var(--ontrack)}
+  .statuspill.atrisk{background:rgba(245,166,35,.16);color:var(--atrisk)}
+  .statuspill.overdue{background:rgba(239,71,87,.16);color:var(--overdue)}
+  .strat{display:inline-block;background:var(--chip);color:var(--muted);font-size:11px;
+    padding:2px 9px;border-radius:20px;margin:9px 0}
+  .cgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;margin-top:6px}
+  .cgrid .k{color:var(--faint);font-size:11px;text-transform:uppercase;letter-spacing:.4px}
+  .cgrid .v{font-size:13.5px;font-weight:600}
+  .cgrid .v.warn{color:var(--atrisk)}
+  .cgrid .v.bad{color:var(--overdue)}
+  .cfoot{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
+  .cfoot .expand{background:none;border:none;color:var(--accent);padding:0;font-size:12.5px;
+    display:flex;align-items:center;gap:6px;width:100%;justify-content:space-between}
+  .cfoot .expand .arw{transition:transform .15s}
+  .card.open .cfoot .expand .arw{transform:rotate(90deg)}
+
+  table.cand{width:100%;border-collapse:collapse;margin-top:11px;display:none}
+  .card.open table.cand{display:table}
+  table.cand th{text-align:left;color:var(--faint);font-size:10px;text-transform:uppercase;
+    letter-spacing:.5px;font-weight:600;padding:5px 6px;border-bottom:1px solid var(--line)}
+  table.cand td{padding:7px 6px;border-bottom:1px solid rgba(42,52,66,.5);font-size:12.5px;vertical-align:top}
+  table.cand tr:last-child td{border-bottom:none}
+  .cname{font-weight:600}
+  .cfirm{color:var(--faint);font-size:11px}
+  .dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;vertical-align:middle}
+  .int-High{color:var(--ontrack)} .int-Medium{color:var(--atrisk)} .int-Low{color:var(--overdue)}
+  .rating{font-weight:600;font-size:11px;padding:2px 7px;border-radius:6px;white-space:nowrap}
+  .rating.StrongYes{background:rgba(45,212,167,.16);color:var(--strongyes)}
+  .rating.Yes{background:rgba(126,200,160,.16);color:var(--yes)}
+  .rating.Maybe{background:rgba(245,166,35,.16);color:var(--maybe)}
+  .rating.No{background:rgba(239,71,87,.16);color:var(--no)}
+  .rating.none{color:var(--faint);background:none;font-weight:400}
+  .sub-yes{color:var(--ontrack);font-weight:600}
+  .sub-no{color:var(--faint)}
+  .agepill{font-size:10px;padding:1px 6px;border-radius:5px;margin-left:6px;font-weight:600}
+  .age-fresh{background:rgba(45,212,167,.14);color:var(--ontrack)}
+  .age-warm{background:rgba(245,166,35,.14);color:var(--atrisk)}
+  .age-stale{background:rgba(239,71,87,.14);color:var(--overdue)}
+  .rr{display:inline-block;font-size:10px;font-weight:600;color:var(--accent);
+    background:rgba(91,157,255,.14);padding:1px 6px;border-radius:5px;margin-left:6px}
+  .hidden{display:none !important}
+  footer{color:var(--faint);font-size:11.5px;text-align:center;padding:24px;border-top:1px solid var(--line);margin-top:30px}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <span class="cpi">CPI · Investment Professional Search</span>
+    <h1>Search Desk — Alex</h1>
+    <span class="sub">One view of what needs you today, joined from call notes, tracker, mandates &amp; client feedback.</span>
+  </div>
+  <div class="asof">As of <b id="asof"></b><br><span id="stratnote"></span></div>
+</header>
+
+<main>
+  <div class="metrics" id="metrics"></div>
+
+  <div class="controls">
+    <div class="grp">
+      <label>Strategy</label>
+      <select id="stratFilter"></select>
+    </div>
+    <div class="grp">
+      <label>Rank queue by</label>
+      <button class="toggle active" id="byUrgency">Urgency</button>
+      <button class="toggle" id="byFee">Fee at risk</button>
+    </div>
+    <div class="spacer"></div>
+    <button id="expandAll">Expand all pipelines</button>
+  </div>
+
+  <section>
+    <h2>⚡ Needs Me Today <span class="count" id="queueCount"></span></h2>
+    <div class="queue" id="queue"></div>
+  </section>
+
+  <section>
+    <h2>Search Pipeline Board <span class="count" id="boardCount"></span></h2>
+    <div class="board" id="board"></div>
+  </section>
+</main>
+
+<footer>
+  CPI Search Desk · synthetic workshop data · built with Cowork.
+  Status colors: <b style="color:var(--ontrack)">On Track</b> · <b style="color:var(--atrisk)">At Risk</b> · <b style="color:var(--overdue)">Overdue</b>
+</footer>
+
+<script>
+const TODAY = new Date('2026-07-02');
+document.getElementById('asof').textContent = TODAY.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+
+const searches = [
+  {id:'S-101',client:'Meridian Capital Partners',role:'VP - Deal Team',strategy:'PE Buyout',loc:'New York',stage:'Client Interviews',fee:185000,opened:'2026-04-14',close:'2026-07-17',status:'At Risk'},
+  {id:'S-102',client:'Blackford Credit',role:'Senior Associate',strategy:'Credit / Distressed',loc:'Chicago',stage:'Shortlist',fee:110000,opened:'2026-05-05',close:'2026-08-15',status:'On Track'},
+  {id:'S-103',client:'Cedar Grove Partners',role:'Principal',strategy:'PE Growth',loc:'San Francisco',stage:'Sourcing',fee:240000,opened:'2026-06-01',close:'2026-09-30',status:'On Track'},
+  {id:'S-104',client:'Anthem Real Estate',role:'Associate',strategy:'Real Estate',loc:'Boston',stage:'Client Interviews',fee:95000,opened:'2026-03-20',close:'2026-06-30',status:'Overdue'},
+  {id:'S-105',client:'Halyard Global',role:'VP - Investor Relations',strategy:'Hedge Fund',loc:'New York',stage:'Offer Stage',fee:175000,opened:'2026-04-28',close:'2026-07-10',status:'At Risk'},
+  {id:'S-106',client:'Tessellate Ventures',role:'Senior Associate',strategy:'Venture Capital',loc:'San Francisco',stage:'Sourcing',fee:120000,opened:'2026-06-18',close:'2026-10-01',status:'On Track'},
+  {id:'S-107',client:'Keystone Family Office',role:'Investment Director',strategy:'Family Office',loc:'Philadelphia',stage:'Shortlist',fee:210000,opened:'2026-05-12',close:'2026-08-20',status:'On Track'},
+  {id:'S-108',client:'Meridian Capital Partners',role:'Associate',strategy:'PE Buyout',loc:'New York',stage:'Sourcing',fee:90000,opened:'2026-06-22',close:'2026-09-15',status:'On Track'}
+];
+
+const candidates = [
+  {id:'C-201',name:'Priya Nadkarni',firm:'Sentinel Equity',title:'Senior Associate',search:'S-101',stage:'Client Interviews',lastContact:'2026-06-24',interest:'High',submitted:true},
+  {id:'C-202',name:'Marcus Feldman',firm:'Northgate Capital',title:'Associate',search:'S-101',stage:'Client Interviews',lastContact:'2026-06-12',interest:'Medium',submitted:true,reroute:'S-108'},
+  {id:'C-203',name:'Dana Whitmore',firm:'Larch Partners',title:'VP',search:'S-101',stage:'Shortlist',lastContact:'2026-05-30',interest:'High',submitted:false},
+  {id:'C-204',name:'Owen Brackett',firm:'Fifth Street Credit',title:'Associate',search:'S-102',stage:'Shortlist',lastContact:'2026-06-25',interest:'High',submitted:true},
+  {id:'C-205',name:'Sofia Reyes',firm:'Blue Harbor',title:'Senior Associate',search:'S-102',stage:'Screening',lastContact:'2026-06-20',interest:'Medium',submitted:false},
+  {id:'C-206',name:'Ellis Tran',firm:'Vantage Growth',title:'Associate',search:'S-103',stage:'Sourcing',lastContact:'2026-06-26',interest:'High',submitted:false,reroute:'FUTURE'},
+  {id:'C-207',name:'Grace Okafor',firm:'Cardinal Realty',title:'Analyst',search:'S-104',stage:'Client Interviews',lastContact:'2026-05-18',interest:'Low',submitted:true},
+  {id:'C-208',name:'Nathan Cole',firm:'Perch RE',title:'Associate',search:'S-104',stage:'Screening',lastContact:'2026-04-10',interest:'Medium',submitted:false},
+  {id:'C-209',name:'Yuki Tanaka',firm:'Halyard Global',title:'Associate',search:'S-105',stage:'Offer Stage',lastContact:'2026-06-27',interest:'High',submitted:true},
+  {id:'C-210',name:'Rafael Ortiz',firm:'Summit IR',title:'VP',search:'S-105',stage:'Client Interviews',lastContact:'2026-06-08',interest:'Medium',submitted:true},
+  {id:'C-211',name:'Hannah Weiss',firm:'Foundry VC',title:'Associate',search:'S-106',stage:'Screening',lastContact:'2026-06-23',interest:'High',submitted:false},
+  {id:'C-212',name:'Devin Park',firm:'Keystone Family Office',title:'Associate',search:'S-107',stage:'Shortlist',lastContact:'2026-06-19',interest:'High',submitted:false},
+  {id:'C-213',name:'Isabel Moreno',firm:'Granite Wealth',title:'Director',search:'S-107',stage:'Screening',lastContact:'2026-06-05',interest:'Medium',submitted:false}
+];
+
+const feedback = {
+  'C-201':{rating:'Strong Yes',note:'Team loved her. Want a second round ASAP. Partner traveling next week — scheduling risk.',action:'Schedule final round; client slow to confirm dates'},
+  'C-202':{rating:'No',note:'Too junior for VP. Would consider for a more junior seat.',action:'Re-route to S-108'},
+  'C-207':{rating:'Maybe',note:'Fine but not excited. Asked us to widen the pool — pipeline feels thin.',action:'Source more candidates; search is overdue'},
+  'C-209':{rating:'Strong Yes',note:'Ready to extend offer. Waiting on us to confirm comp expectations before drafting.',action:'Confirm comp and push written offer this week'},
+  'C-210':{rating:'Yes',note:'Strong backup. Happy to hold if primary closes.',action:'Hold as backup'},
+  'C-204':{rating:'Yes',note:'Profile looks great, want to interview next week.',action:'Schedule first round'}
+};
+
+// call-note intel that isn't in the structured tracker
+const noteIntel = {
+  'C-201':'Competing firm is dangling an offer — needs a decision inside ~2 weeks. Meridian must move.',
+  'C-203':'Waiting on her updated deal sheet; gone quiet since 5/30. Needs a chase.',
+  'C-208':'Screened in April, never followed up (your miss). S-104 is starving for candidates — re-engage.',
+  'C-209':'Verbal offer expected this week — needs written offer pushed or we lose momentum.',
+  'C-206':'Associate, but Cedar Grove wants a Principal (2 levels up). Not a fit for S-103 — park for a future growth-equity search.'
+};
+
+const fmtFee = n => '$'+(n/1000).toFixed(0)+'k';
+const daysBetween = (a,b)=>Math.round((new Date(b)-new Date(a))/86400000);
+const searchById = id => searches.find(s=>s.id===id);
+const candsFor = s => { const id = (s && s.id) ? s.id : s; return candidates.filter(c=>c.search===id); };
+const statusClass = s => s.replace(/[^a-z]/gi,'').toLowerCase();
+const ratingClass = r => r ? r.replace(/[^a-z]/gi,'') : 'none';
+
+let currentStrat = 'ALL';
+let rankMode = 'urgency';
+
+/* ---------- METRICS ---------- */
+function renderMetrics(){
+  const list = currentStrat==='ALL'?searches:searches.filter(s=>s.strategy===currentStrat);
+  const totalFee = list.reduce((a,s)=>a+s.fee,0);
+  const atRisk = list.filter(s=>s.status!=='On Track').length;
+  const stageOrder=['Sourcing','Screening','Shortlist','Client Interviews','Offer Stage'];
+  const stageColor={'Sourcing':'#64748b','Screening':'#5b9dff','Shortlist':'#7c6cff','Client Interviews':'#f5a623','Offer Stage':'#2dd4a7'};
+  const cand = candidates.filter(c=>list.some(s=>s.id===c.search));
+  const stageCounts=stageOrder.map(st=>({st,n:cand.filter(c=>c.stage===st).length}));
+  const bars = stageCounts.filter(x=>x.n>0).map(x=>`<span style="flex:${x.n};background:${stageColor[x.st]}" title="${x.st}: ${x.n}"></span>`).join('');
+  const stageLine = stageCounts.map(x=>`${x.st.replace(' Interviews',' Int.').replace('Offer Stage','Offer')} ${x.n}`).join(' · ');
+  document.getElementById('metrics').innerHTML = `
+    <div class="metric"><div class="n">${list.length}</div><div class="l">Open Searches</div><div class="sublabel">across ${new Set(list.map(s=>s.strategy)).size} strategies</div></div>
+    <div class="metric"><div class="n">${fmtFee(totalFee)}</div><div class="l">Fee Value In Play</div><div class="sublabel">${fmtFee(totalFee/list.length)} avg / mandate</div></div>
+    <div class="metric"><div class="n">${cand.length}</div><div class="l">Candidates In Play</div><div class="stagebars">${bars}</div><div class="sublabel">${stageLine}</div></div>
+    <div class="metric risk"><div class="n">${atRisk}</div><div class="l">Searches At Risk</div><div class="sublabel">${fmtFee(list.filter(s=>s.status!=='On Track').reduce((a,s)=>a+s.fee,0))} fee exposed</div></div>`;
+}
+
+/* ---------- NEEDS ME TODAY ---------- */
+function buildQueue(){
+  const items=[];
+  const push=(o)=>{ if(currentStrat==='ALL'||searchById(o.searchId).strategy===currentStrat) items.push(o); };
+
+  // 1. Strong Yes waiting on my move
+  candidates.forEach(c=>{
+    const fb=feedback[c.id];
+    if(fb && fb.rating==='Strong Yes'){
+      const s=searchById(c.search);
+      const offer=c.stage==='Offer Stage';
+      push({
+        searchId:c.search, fee:s.fee, urgency: offer?100:95,
+        tags:[{cls:'sy',txt:'Client: Strong Yes'}, offer?{cls:'offer',txt:'Offer Stage'}:null].filter(Boolean),
+        title:`<span class="who">${c.name}</span> — ${s.client} ${s.role}`,
+        meta:`${s.strategy} · ${s.id} · client feedback ${fb.action?'':''}`,
+        action:fb.action, why:noteIntel[c.id]||fb.note
+      });
+    }
+  });
+
+  // 2. Offer-stage at risk of stalling (not already Strong-Yes captured — but Yuki is both; dedupe by keeping highest)
+  // 3. Overdue / At Risk searches with thin pipeline
+  searches.forEach(s=>{
+    const cs=candsFor(s);
+    const live=cs.filter(c=>c.interest!=='Low');
+    const thin = (s.status==='Overdue'||s.status==='At Risk') && (cs.length<=2 || live.length<=1);
+    if(s.status==='Overdue' || thin){
+      // Only surface as a search-level item if not dominated by an offer/strong-yes already
+      const hasStrongYes = cs.some(c=>feedback[c.id]&&feedback[c.id].rating==='Strong Yes');
+      if(s.status==='Overdue' && !hasStrongYes){
+        push({
+          searchId:s.id, fee:s.fee, urgency:80,
+          tags:[{cls:'thin',txt:s.status}, {cls:'cold',txt:cs.length+' in pipeline'}],
+          title:`<span class="who">${s.client}</span> — ${s.role}`,
+          meta:`${s.strategy} · ${s.id} · target close ${new Date(s.close).toLocaleDateString('en-US',{month:'short',day:'numeric'})}`,
+          action:'Re-source and widen the pool; client asked to see more names.',
+          why:`Search is ${daysBetween(s.close,TODAY)} days past target. Only candidate interviewed (Grace Okafor) is cooling to Low interest — re-engage Nathan Cole (no contact since Apr 10).`
+        });
+      }
+    }
+  });
+
+  // 4. Candidates not contacted in 14+ days (that aren't already the offer/strong-yes items)
+  candidates.forEach(c=>{
+    const gap=daysBetween(c.lastContact,TODAY);
+    const fb=feedback[c.id];
+    const alreadyTop = fb && fb.rating==='Strong Yes';
+    if(gap>=14 && !alreadyTop && c.interest!=='Low' && !(fb && (fb.rating==='Yes'||fb.rating==='No'))){
+      const s=searchById(c.search);
+      // skip backups already held and candidates handled by a dedicated re-route item
+      if(c.id==='C-210') return; // Rafael explicitly "hold as backup"
+      if(c.reroute) return;      // Marcus handled by the re-route item below
+      push({
+        searchId:c.search, fee:s.fee, urgency: 60 - Math.min(gap/10,10),
+        tags:[{cls:'cold',txt:gap+' days no contact'}, c.reroute?{cls:'reroute',txt:'Re-route flag'}:null].filter(Boolean),
+        title:`<span class="who">${c.name}</span> — ${s.client} ${s.role}`,
+        meta:`${s.strategy} · ${s.id} · ${c.stage} · ${c.interest} interest`,
+        action: c.id==='C-203' ? 'Chase her updated deal sheet, then submit to Meridian.' :
+                c.id==='C-208' ? 'Re-engage and re-screen for the Anthem RE search.' :
+                'Re-establish contact before this candidate goes cold.',
+        why: noteIntel[c.id] || `Last contact ${new Date(c.lastContact).toLocaleDateString('en-US',{month:'short',day:'numeric'})}. ${c.interest} interest and going quiet.`
+      });
+    }
+  });
+
+  // 5. Re-route flag (Marcus → S-108)
+  const marcus=candidates.find(c=>c.id==='C-202');
+  if(marcus){
+    const from=searchById('S-101'), to=searchById('S-108');
+    push({
+      searchId:'S-108', fee:to.fee, urgency:50,
+      tags:[{cls:'reroute',txt:'Re-route → S-108'},{cls:'no',txt:'Client: No (VP)'}],
+      title:`<span class="who">Marcus Feldman</span> — re-route to ${to.client} ${to.role}`,
+      meta:`Currently on ${from.id} (VP) · client passed as too junior`,
+      action:'Move Marcus off the VP search and put him forward for the S-108 Associate seat.',
+      why:'Client said "too junior for VP, would consider a more junior seat." He fits the open Associate mandate — don\'t lose the relationship.'
+    });
+  }
+
+  // dedupe by (candidate/search + title) keeping highest urgency
+  const seen=new Map();
+  items.forEach(it=>{ const k=it.title; if(!seen.has(k)||seen.get(k).urgency<it.urgency) seen.set(k,it); });
+  let out=[...seen.values()];
+  out.sort((a,b)=> rankMode==='fee' ? (b.fee-a.fee)||(b.urgency-a.urgency) : (b.urgency-a.urgency)||(b.fee-a.fee));
+  return out;
+}
+
+function renderQueue(){
+  const items=buildQueue();
+  document.getElementById('queueCount').textContent=items.length+' actions';
+  document.getElementById('queue').innerHTML = items.map((it,i)=>{
+    const pri = it.urgency>=90?'p1':it.urgency>=70?'p2':'p3';
+    const tags=it.tags.map(t=>`<span class="tag ${t.cls}">${t.txt}</span>`).join(' ');
+    return `<div class="qitem ${pri}">
+      <div class="qrank">${i+1}</div>
+      <div class="qbody">
+        <div class="qtitle">${it.title}</div>
+        <div class="qmeta">${it.meta}</div>
+        <div class="qaction"><b>Do:</b> ${it.action}</div>
+        <div class="qwhy">↳ ${it.why}</div>
+        <div>${tags}</div>
+      </div>
+      <div class="qright"><div class="qfee">${fmtFee(it.fee)}<span class="cap">${rankMode==='fee'?'fee at risk':'mandate fee'}</span></div></div>
+    </div>`;
+  }).join('');
+}
+
+/* ---------- PIPELINE BOARD ---------- */
+function ageInfo(c){
+  const gap=daysBetween(c.lastContact,TODAY);
+  const cls = gap>=21?'age-stale':gap>=14?'age-warm':'age-fresh';
+  return {gap,cls};
+}
+function renderBoard(){
+  const list = currentStrat==='ALL'?searches:searches.filter(s=>s.strategy===currentStrat);
+  // order: Overdue, At Risk, On Track; then by days-to-close
+  const rank={'Overdue':0,'At Risk':1,'On Track':2};
+  const ordered=[...list].sort((a,b)=> (rank[a.status]-rank[b.status]) || (daysBetween(TODAY,a.close)-daysBetween(TODAY,b.close)));
+  document.getElementById('boardCount').textContent=list.length+' mandates';
+  document.getElementById('board').innerHTML = ordered.map(s=>{
+    const cs=candsFor(s);
+    const dtc=daysBetween(TODAY,s.close);
+    const dtcCls = dtc<0?'bad':dtc<=14?'warn':'';
+    const dtcTxt = dtc<0?`${-dtc}d overdue`:`${dtc}d left`;
+    const sc=statusClass(s.status);
+    const rows=cs.map(c=>{
+      const fb=feedback[c.id];
+      const {gap,cls}=ageInfo(c);
+      const rr = c.reroute ? `<span class="rr" title="Better fit elsewhere">re-route${c.reroute==='FUTURE'?'':' → '+c.reroute}</span>` : '';
+      return `<tr>
+        <td><span class="cname">${c.name}</span>${rr}<br><span class="cfirm">${c.title}, ${c.firm}</span></td>
+        <td>${c.stage}<span class="agepill ${cls}" title="Days since last contact">${gap}d</span></td>
+        <td class="int-${c.interest}"><span class="dot" style="background:currentColor"></span>${c.interest}</td>
+        <td class="${c.submitted?'sub-yes':'sub-no'}">${c.submitted?'Submitted':'—'}</td>
+        <td>${fb?`<span class="rating ${ratingClass(fb.rating)}">${fb.rating}</span>`:'<span class="rating none">—</span>'}</td>
+      </tr>`;
+    }).join('');
+    return `<div class="card ${sc}">
+      <div class="chead">
+        <div><div class="client">${s.client}</div><div class="role">${s.role} · ${s.loc}</div></div>
+        <span class="statuspill ${sc}">${s.status}</span>
+      </div>
+      <span class="strat">${s.strategy}</span>
+      <div class="cgrid">
+        <div><div class="k">Stage</div><div class="v">${s.stage}</div></div>
+        <div><div class="k">Fee est.</div><div class="v">${fmtFee(s.fee)}</div></div>
+        <div><div class="k">Target close</div><div class="v ${dtcCls}">${dtcTxt}</div></div>
+        <div><div class="k">Pipeline</div><div class="v">${cs.length} candidate${cs.length!==1?'s':''}</div></div>
+      </div>
+      <div class="cfoot">
+        <button class="expand" onclick="this.closest('.card').classList.toggle('open')">
+          <span>Candidate pipeline (${cs.length})</span><span class="arw">›</span>
+        </button>
+        <table class="cand">
+          <thead><tr><th>Candidate</th><th>Stage</th><th>Interest</th><th>Submitted</th><th>Client feedback</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ---------- CONTROLS ---------- */
+function renderStratFilter(){
+  const strats=['ALL',...new Set(searches.map(s=>s.strategy))];
+  document.getElementById('stratFilter').innerHTML=strats.map(s=>`<option value="${s}">${s==='ALL'?'All strategies':s}</option>`).join('');
+}
+function renderAll(){
+  renderMetrics(); renderQueue(); renderBoard();
+  document.getElementById('stratnote').textContent = currentStrat==='ALL'?'All strategies':'Filtered: '+currentStrat;
+}
+document.getElementById('stratFilter').addEventListener('change',e=>{currentStrat=e.target.value;renderAll();});
+document.getElementById('byUrgency').addEventListener('click',()=>{rankMode='urgency';document.getElementById('byUrgency').classList.add('active');document.getElementById('byFee').classList.remove('active');renderQueue();});
+document.getElementById('byFee').addEventListener('click',()=>{rankMode='fee';document.getElementById('byFee').classList.add('active');document.getElementById('byUrgency').classList.remove('active');renderQueue();});
+let allOpen=false;
+document.getElementById('expandAll').addEventListener('click',()=>{
+  allOpen=!allOpen;
+  document.querySelectorAll('.card').forEach(c=>c.classList.toggle('open',allOpen));
+  document.getElementById('expandAll').textContent=allOpen?'Collapse all pipelines':'Expand all pipelines';
+});
+
+renderStratFilter();
+renderAll();
+</script>
+</body>
+</html>

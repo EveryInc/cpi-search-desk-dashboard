@@ -1,0 +1,9 @@
+search_id,client_firm,role_title,strategy,location,stage,fee_estimate_usd,opened_date,target_close,status
+S-101,Meridian Capital Partners,VP - Deal Team,PE Buyout,New York,Client Interviews,185000,2026-04-14,2026-07-17,At Risk
+S-102,Blackford Credit,Senior Associate,Credit / Distressed,Chicago,Shortlist,110000,2026-05-05,2026-08-15,On Track
+S-103,Cedar Grove Partners,Principal,PE Growth,San Francisco,Sourcing,240000,2026-06-01,2026-09-30,On Track
+S-104,Anthem Real Estate,Associate,Real Estate,Boston,Client Interviews,95000,2026-03-20,2026-06-30,Overdue
+S-105,Halyard Global,VP - Investor Relations,Hedge Fund,New York,Offer Stage,175000,2026-04-28,2026-07-10,At Risk
+S-106,Tessellate Ventures,Senior Associate,Venture Capital,San Francisco,Sourcing,120000,2026-06-18,2026-10-01,On Track
+S-107,Keystone Family Office,Investment Director,Family Office,Philadelphia,Shortlist,210000,2026-05-12,2026-08-20,On Track
+S-108,Meridian Capital Partners,Associate,PE Buyout,New York,Sourcing,90000,2026-06-22,2026-09-15,On Track

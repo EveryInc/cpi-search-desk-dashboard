@@ -1,0 +1,14 @@
+candidate_id,name,current_firm,current_title,search_id,stage,last_contact,interest_level,submitted_to_client,notes_ref
+C-201,Priya Nadkarni,Sentinel Equity,Senior Associate,S-101,Client Interviews,2026-06-24,High,Yes,CN-01
+C-202,Marcus Feldman,Northgate Capital,Associate,S-101,Client Interviews,2026-06-12,Medium,Yes,CN-02
+C-203,Dana Whitmore,Larch Partners,VP,S-101,Shortlist,2026-05-30,High,No,CN-03
+C-204,Owen Brackett,Fifth Street Credit,Associate,S-102,Shortlist,2026-06-25,High,Yes,CN-04
+C-205,Sofia Reyes,Blue Harbor,Senior Associate,S-102,Screening,2026-06-20,Medium,No,CN-05
+C-206,Ellis Tran,Vantage Growth,Associate,S-103,Sourcing,2026-06-26,High,No,CN-06
+C-207,Grace Okafor,Cardinal Realty,Analyst,S-104,Client Interviews,2026-05-18,Low,Yes,CN-07
+C-208,Nathan Cole,Perch RE,Associate,S-104,Screening,2026-04-10,Medium,No,CN-08
+C-209,Yuki Tanaka,Halyard Global,Associate,S-105,Offer Stage,2026-06-27,High,Yes,CN-09
+C-210,Rafael Ortiz,Summit IR,VP,S-105,Client Interviews,2026-06-08,Medium,Yes,CN-10
+C-211,Hannah Weiss,Foundry VC,Associate,S-106,Screening,2026-06-23,High,No,CN-11
+C-212,Devin Park,Keystone Family Office,Associate,S-107,Shortlist,2026-06-19,High,No,CN-12
+C-213,Isabel Moreno,Granite Wealth,Director,S-107,Screening,2026-06-05,Medium,No,CN-13
